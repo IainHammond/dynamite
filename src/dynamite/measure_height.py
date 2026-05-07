@@ -1758,9 +1758,8 @@ class Surface:
 
 
     def fit_surface_height_gp(self):
-
-        import celerite
-        from celerite import terms
+        import celerite2
+        from celerite2 import terms
 
         x = np.array(self.r.ravel().compressed())
         y = self.h.ravel().compressed()
@@ -1771,13 +1770,16 @@ class Surface:
         y=y[order]
         yerr=yerr[order]
 
-        # Set up the GP model
-        k0 = terms.JitterTerm(log_sigma=np.log(np.var(y)))
-        k1 = terms.RealTerm(log_a=np.log(np.var(y)), log_c=np.log(50))
-        k2 = terms.RealTerm(log_a=np.log(np.var(y)), log_c=np.log(5))
-        kernel = k0+k1+k2
-        kernel = k0+k2
-        gp = celerite.GP(kernel, fit_mean=False)
+        # set up the GP model
+        # in celerite2, we use GaussianProcess with a mean function
+        # the JitterTerm and RealTerm are replaced with appropriate terms
+        sigma = np.sqrt(np.var(y))
+        k0 = terms.SHOTerm(sigma=sigma, rho=1.0, Q=1/np.sqrt(2))
+        k1 = terms.SHOTerm(sigma=sigma, rho=50.0, Q=1/np.sqrt(2))
+        k2 = terms.SHOTerm(sigma=sigma, rho=5.0, Q=1/np.sqrt(2))
+        kernel = k0 + k1 + k2
+        kernel = k0 + k2
+        gp = celerite2.GaussianProcess(kernel, mean=0.0)
 
         # Define a cost function
         def neg_log_like(params, y, gp):
@@ -1786,9 +1788,9 @@ class Surface:
 
         def grad_neg_log_like(params, y, gp):
             gp.set_parameter_vector(params)
-            return -gp.grad_log_likelihood(y)[1]
+            return -gp.grad_log_likelihood(y, params)[1]
 
-        gp.compute(x, yerr)
+        gp.compute(x, yerr=yerr)
 
         initial_params = gp.get_parameter_vector()
         bounds = gp.get_parameter_bounds()
@@ -1800,7 +1802,7 @@ class Surface:
         # Make the maximum likelihood prediction
         t = np.linspace(np.min(x), np.max(x), 500)
 
-        mu, var = gp.predict(y, t, return_var=True)
+        mu, var = gp.predict(y, t=t, return_var=True)
         std = np.sqrt(var)
 
         return t, mu, std
