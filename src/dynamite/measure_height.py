@@ -14,7 +14,7 @@ import astropy.constants as ac
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.constants as sc
-from alive_progress import alive_bar
+from tqdm import tqdm
 from numpy import ndarray
 from scipy import ndimage
 from scipy.ndimage import rotate
@@ -543,10 +543,8 @@ class Surface:
         self.x_star_rot = center[0] + dx * np.cos(angle) + dy * np.sin(angle)
         self.y_star_rot = center[1] - dx * np.sin(angle) + dy * np.cos(angle)
 
-        with alive_bar(int(self.iv_max-self.iv_min), title="Rotating cube") as bar:
-            for iv in range(self.iv_min,self.iv_max):
-                self.cube.image[iv,:,:] = np.array(rotate(self.cube.image[iv,:,:], self.PA - self.inc_sign * 90.0, reshape=False))
-                bar()
+        for iv in tqdm(range(self.iv_min, self.iv_max), desc="Rotating cube"):
+            self.cube.image[iv,:,:] = np.array(rotate(self.cube.image[iv,:,:], self.PA - self.inc_sign * 90.0, reshape=False))
 
         return
 
@@ -650,12 +648,10 @@ class Surface:
         self.I = np.zeros([ns,nv,nx,2])
 
         # Loop over the channels
-        with alive_bar(int(self.iv_max-self.iv_min), title="Extracting isovelocity curves") as bar:
-            for iv in range(self.iv_min,self.iv_max):
-                for iscale in range(self.n_scales):
-                    self._extract_isovelocity_1channel(iv,iscale)
-                    #self._refine_isovelocity_1channel(iv,iscale=iscale)
-                    bar()
+        for iv in tqdm(range(self.iv_min, self.iv_max), desc="Extracting isovelocity curves"):
+            for iscale in range(self.n_scales):
+                self._extract_isovelocity_1channel(iv,iscale)
+                #self._refine_isovelocity_1channel(iv,iscale=iscale)
 
         #--  Additional spectral filtering to clean the data ??
 
@@ -708,11 +704,9 @@ class Surface:
                 self.multiscale_std[iscale] = np.nanstd([im,im1])
 
                 # Make the multiscale cube
-                with alive_bar(int(self.iv_max-self.iv_min), title="Making multi-scale cube: scale #"+str(iscale)) as bar:
-                    for iv in range(self.iv_min,self.iv_max):
-                        im = self.rotated_images[0,iv-self.iv_min,:,:]
-                        self.rotated_images[iscale,iv-self.iv_min,:,:] = convolve_fft(im, beam)
-                        bar()
+                for iv in tqdm(range(self.iv_min, self.iv_max), desc=f"Making multi-scale cube: scale #{iscale}"):
+                    im = self.rotated_images[0,iv-self.iv_min,:,:]
+                    self.rotated_images[iscale,iv-self.iv_min,:,:] = convolve_fft(im, beam)
 
                 self.multiscale_bmaj[iscale] = bmaj
                 self.multiscale_bmin[iscale] = bmin
