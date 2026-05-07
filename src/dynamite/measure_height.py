@@ -1089,7 +1089,7 @@ class Surface:
             metric[i] = self.h_std
 
         plt.plot(inc_array,metric, color="red", markersize=1)
-        plt.xlabel("Inclination ($^\mathrm{o}$)")
+        plt.xlabel(r"Inclination ($^\mathrm{o}$)")
         plt.ylabel("altitude dispersion")
 
         # T dispersion
@@ -1106,7 +1106,7 @@ class Surface:
             metric[i] = self.T_std
 
         plt.plot(inc_array,metric, color="red", markersize=1)
-        plt.xlabel("Inclination ($^\mathrm{o}$)")
+        plt.xlabel(r"Inclination ($^\mathrm{o}$)")
         plt.ylabel("T dispersion")
 
         # Velocity dispersion
@@ -1135,7 +1135,7 @@ class Surface:
             metric[i] = self.v_std
 
         plt.plot(inc_array,metric, color="blue", markersize=1)
-        plt.xlabel("Inclination ($^\mathrm{o}$)")
+        plt.xlabel(r"Inclination ($^\mathrm{o}$)")
         plt.ylabel("Velocity dispersion")
         self.inc = inc_array[np.nanargmin(metric)]
         print("Best fit for inclination =", self.inc, "deg")
@@ -1372,7 +1372,7 @@ class Surface:
         #    im = np.array(rotate(im, self.PA - self.inc_sign * 90.0, reshape=False))
 
         ax.imshow(im, origin="lower", cmap='binary_r')
-        ax.set_title(r'v='+"{:.2f}".format(cube.velocity[iv])+' , $\Delta$v='+"{:.2f}".format(cube.velocity[iv] - self.v_syst)+' , id:'+str(iv), color='k')
+        ax.set_title(r'v='+"{:.2f}".format(cube.velocity[iv])+r' , $\Delta$v='+"{:.2f}".format(cube.velocity[iv] - self.v_syst)+' , id:'+str(iv), color='k')
 
         if n_surf[iscale,iv]:
             ax.plot(x[iscale,iv,:n_surf[iscale,iv]],y[iscale,iv,:n_surf[iscale,iv],0],"o",color="red",markersize=1)
