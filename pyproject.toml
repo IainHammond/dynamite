@@ -32,7 +32,8 @@ dependencies = [
     "scipy",
     "matplotlib",
     "tqdm",
-    "casa_cube"
+    "casa_cube",
+    "celerite2"
 ]
 
 [project.urls]
