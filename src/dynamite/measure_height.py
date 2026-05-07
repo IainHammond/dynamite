@@ -539,7 +539,7 @@ class Surface:
         self.x_star_rot = center[0] + dx * np.cos(angle) + dy * np.sin(angle)
         self.y_star_rot = center[1] - dx * np.sin(angle) + dy * np.cos(angle)
 
-        for iv in tqdm(range(self.iv_min, self.iv_max), desc="Rotating cube"):
+        for iv in tqdm(range(self.iv_min, self.iv_max + 1), desc="Rotating cube"):
             self.cube.image[iv,:,:] = np.array(rotate(self.cube.image[iv,:,:], self.PA - self.inc_sign * 90.0, reshape=False))
 
         return
@@ -644,7 +644,7 @@ class Surface:
         self.I = np.zeros([ns,nv,nx,2])
 
         # Loop over the channels
-        for iv in tqdm(range(self.iv_min, self.iv_max), desc="Extracting isovelocity curves"):
+        for iv in tqdm(range(self.iv_min, self.iv_max + 1), desc="Extracting isovelocity curves"):
             for iscale in range(self.n_scales):
                 self._extract_isovelocity_1channel(iv,iscale)
                 #self._refine_isovelocity_1channel(iv,iscale=iscale)
@@ -700,7 +700,7 @@ class Surface:
                 self.multiscale_std[iscale] = np.nanstd([im,im1])
 
                 # Make the multiscale cube
-                for iv in tqdm(range(self.iv_min, self.iv_max), desc=f"Making multi-scale cube: scale #{iscale}"):
+                for iv in tqdm(range(self.iv_min, self.iv_max + 1), desc=f"Making multi-scale cube: scale #{iscale}"):
                     im = self.rotated_images[0,iv-self.iv_min,:,:]
                     self.rotated_images[iscale,iv-self.iv_min,:,:] = convolve_fft(im, beam)
 
