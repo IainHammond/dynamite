@@ -19,11 +19,10 @@ from numpy import ndarray
 from scipy import ndimage
 from scipy.ndimage import rotate
 from scipy.optimize import curve_fit, minimize
-from scipy.optimize import minimize
 from scipy.interpolate import interp1d
 from scipy.signal import find_peaks
 from scipy.stats import binned_statistic
-from astropy.convolution import Gaussian2DKernel, convolve, convolve_fft
+from astropy.convolution import Gaussian2DKernel, convolve_fft
 import celerite
 from celerite import terms
 from scipy import signal
