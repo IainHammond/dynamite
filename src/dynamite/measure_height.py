@@ -27,8 +27,7 @@ import celerite
 from celerite import terms
 from scipy import signal
 
-
-import casa_cube
+from casa_cube import Cube
 
 sigma_to_FWHM = 2.0 * np.sqrt(2.0 * np.log(2))
 FWHM_to_sigma = 1.0 / sigma_to_FWHM
@@ -107,7 +106,7 @@ class Surface:
 
         if isinstance(cube,str):
             print("Reading cube: "+cube)
-            cube = casa_cube.Cube(cube)
+            cube = Cube(cube)
 
         # Truncating the cube is velocity if needed
         if vmin is not None:
