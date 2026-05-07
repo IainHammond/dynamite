@@ -1788,7 +1788,7 @@ class Surface:
 
         def grad_neg_log_like(params, y, gp):
             gp.set_parameter_vector(params)
-            return -gp.grad_log_likelihood(y, params)[1]
+            return -gp.grad_log_likelihood(y)[1]
 
         gp.compute(x, yerr=yerr)
 
