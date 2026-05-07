@@ -23,8 +23,6 @@ from scipy.interpolate import interp1d
 from scipy.signal import find_peaks
 from scipy.stats import binned_statistic
 from astropy.convolution import Gaussian2DKernel, convolve_fft
-import celerite
-from celerite import terms
 from scipy import signal
 
 from casa_cube import Cube
@@ -1760,6 +1758,9 @@ class Surface:
 
 
     def fit_surface_height_gp(self):
+
+        import celerite
+        from celerite import terms
 
         x = np.array(self.r.ravel().compressed())
         y = self.h.ravel().compressed()
